@@ -1,0 +1,36 @@
+name: greeting-workflow
+description: A simple workflow that greets the user
+
+inputs:
+  name:
+    type: string
+    description: The name of the person to greet
+
+actions:
+  # 인사말 접두사를 설정하세요
+  - kind: SetVariable
+    id: set_greeting
+    displayName: Set greeting prefix
+    variable: Local.greeting
+    value: Hello
+
+  # 표현식을 사용하여 전체 메시지를 구성하세요.
+  - kind: SetVariable
+    id: build_message
+    displayName: Build greeting message
+    variable: Local.message
+    value: =Concat(Local.greeting, ", ", Workflow.Inputs.name, "!")
+
+  # 사용자에게 인사말을 보내세요
+  - kind: SendActivity
+    id: send_greeting
+    displayName: Send greeting to user
+    activity:
+      text: =Local.message
+
+  # 결과를 outputs에 저장합니다.
+  - kind: SetVariable
+    id: set_output
+    displayName: Store result in outputs
+    variable: Workflow.Outputs.greeting
+    value: =Local.message
